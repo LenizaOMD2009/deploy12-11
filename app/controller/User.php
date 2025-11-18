@@ -2,6 +2,8 @@
 
 namespace app\controller;
 
+use app\database\builder\InsertQuery;
+
 class User extends Base
 {
 
@@ -24,5 +26,15 @@ class User extends Base
             ->render($response, $this->setView('user'), $dadosTemplate)
             ->withHeader('Content-Type', 'text/html')
             ->withStatus(200);
+
+    }
+    public function listuser($request, $response)
+    {
+        $form = $request->getParsedBody();
+
+        var_dump($form);
+
+        echo 'oi';
+        die;
     }
 }
