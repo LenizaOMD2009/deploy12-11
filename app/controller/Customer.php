@@ -3,6 +3,7 @@
 namespace app\controller;
 
 use app\database\builder\InsertQuery;
+
 use app\database\builder\SelectQuery;
 
 class Customer extends Base
@@ -11,24 +12,24 @@ class Customer extends Base
     public function lista($request, $response)
     {
         $dadosTemplate = [
-            'titulo' => 'Lista de usuário'
+            'titulo' => 'Lista de cliente'
         ];
         return $this->getTwig()
-            ->render($response, $this->setView('listuser'), $dadosTemplate)
+            ->render($response, $this->setView('listcustomer'), $dadosTemplate)
             ->withHeader('Content-Type', 'text/html')
             ->withStatus(200);
     }
     public function cadastro($request, $response)
     {
         $dadosTemplate = [
-            'titulo' => 'Cadastro de usuário'
+            'titulo' => 'Cadastro de cliente'
         ];
         return $this->getTwig()
-            ->render($response, $this->setView('user'), $dadosTemplate)
+            ->render($response, $this->setView('customer'), $dadosTemplate)
             ->withHeader('Content-Type', 'text/html')
             ->withStatus(200);
     }
-    public function listuser($request, $response)
+    public function listcustomer($request, $response)
     {
         try {
             #Captura todas a variaveis de forma mais segura VARIAVEIS POST.
@@ -57,25 +58,25 @@ class Customer extends Base
             #O termo pesquisado
             $term = $form['search']['value'] ?? '';
             
-            $query = SelectQuery::select('id,nome,sobrenome,cpf,rg,data_nascimento_abertura')->from('usuario');
+            $query = SelectQuery::select('id,nome,sobrenome,cpf,rg,data_nascimento_abertura')->from('cliente');
             
             if (!is_null($term) && ($term !== '')) {
-                $query->where('usuario.nome', 'ilike', "%{$term}%", 'or')
-                    ->where('usuario.sobrenome', 'ilike', "%{$term}%", 'or')
-                    ->where('usuario.cpf', 'ilike', "%{$term}%", 'or')
-                    ->where('usuario.rg', 'ilike', "%{$term}%", 'or')
-                    ->whereRaw("to_char(usuario.data_nascimento_abertura, 'YYYY-MM-DD') ILIKE '%{$term}%'");
+                $query->where('cliente.nome', 'ilike', "%{$term}%", 'or')
+                    ->where('cliente.sobrenome', 'ilike', "%{$term}%", 'or')
+                    ->where('cliente.cpf', 'ilike', "%{$term}%", 'or')
+                    ->where('cliente.rg', 'ilike', "%{$term}%", 'or')
+                    ->whereRaw("to_char(cliente.data_nascimento_abertura, 'YYYY-MM-DD') ILIKE '%{$term}%'");
 
 
             }
 
-            $users = $query
+            $customer = $query
                 ->order($orderField, $orderType)
                 ->limit($length, $start)
                 ->fetchAll();
             
             $userData = [];
-            foreach ($users as $key => $value) {
+            foreach ($customer as $key => $value) {
                 $userData[$key] = [
                     $value['id'],
                     $value['nome'],
@@ -90,8 +91,8 @@ class Customer extends Base
             
             $data = [
                 'draw' => $form['draw'] ?? 1,
-                'recordsTotal' => count($users),
-                'recordsFiltered' => count($users),
+                'recordsTotal' => count($customer),
+                'recordsFiltered' => count($customer),
                 'data' => $userData
             ];
             
@@ -130,7 +131,7 @@ class Customer extends Base
                 'rg' => $rg,
                 'data_nascimento_abertura' => $data_nascimento_abertura
             ];
-            $IsSave = InsertQuery::table('usuario')->save($FieldsAndValues);
+            $IsSave = InsertQuery::table('cliente')->save($FieldsAndValues);
 
             if (!$IsSave) {
                 echo 'Erro ao salvar';
