@@ -3,6 +3,9 @@
 <div class="container">
     <div class="row">
         <form class="row g-3 needs-validation" id="form">
+            <div class="card-header">
+                    <a href="/usuario/lista" class="btn btn-outline-warning">Voltar</a>
+            </div>
             <div class="col-md-4">
                 <label for="nome" class="form-label">Nome</label>
                 <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite seu nome." required>
@@ -10,26 +13,26 @@
             <div class="col-md-4">
                 <label for="sobrenome" class="form-label">Sobre nome</label>
                 <input type="text" class="form-control" id="sobrenome" name="sobrenome"
-                    placeholder="Por favor digite seu sobre nome" required>
+                placeholder="Por favor digite seu sobre nome" required>
             </div>
             <div class="col-md-4">
                 <label for="cpf" class="form-label">CPF</label>
                 <input type="text" class="form-control" id="cpf" name="cpf" placeholder="Por favor digite seu CPF"
-                    required>
+                required>
             </div>
             <div class="col-md-6">
-                <label for="cidade" class="form-label">Cidade</label>
-                <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Digite sua cidade" required>
+                <label for="rg" class="form-label">RG</label>
+                <input type="text" class="form-control" id="rg" name="rg" placeholder="Digite seu RG" required>
                 <div class="invalid-feedback">
-                    sua cidade
+                    seu RG
                 </div>
             </div>
-
             <div class="col-md-6">
-                <label for="estado" class="form-label">Estado</label>
-                <input type="text" class="form-control" id="estado" name="estado" placeholder="Digite seu estado" required>
-                <div class="invalid-feedback">
-                    seu estado
+                <label for="data_nascimento_abertura" class="form-label">Data de Nascimento</label>
+                <input type="date" class="form-control" id="data_nascimento_abertura" name="data_nascimento_abertura"
+                    placeholder="Digite sua data de nascimento" required>
+                    <div class="invalid-feedback">
+                        Por favor digite sua data de nascimento.
                 </div>
             </div>
             <div class="col-12">

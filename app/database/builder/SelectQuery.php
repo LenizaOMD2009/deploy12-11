@@ -6,54 +6,71 @@ use app\database\Connection;
 
 class SelectQuery
 {
-    private ?string $table = null;
-    private ?string $fields = null;
-    private string $order;
-    private int $limit = 10;
-    private int $offset = 0;
+    private string $fields;
+    private string $table;
     private array $where = [];
     private array $binds = [];
+    private string $order;
+    private int $limit;
+    private int $offset;
     private string $limits;
-    public static function select(string $fields = '*'): ?self
+    public static function select(string $fields = '*'): self
     {
         $self = new self;
         $self->fields = $fields;
         return $self;
     }
-    public function from(string $table): ?self
+    public function from(string $table): self
     {
-        $this->table = '';
         $this->table = $table;
         return $this;
     }
-    public function where(string $field, string $operator, string|int $value, ?string $logic = null): ?self
+    public function where(string $field, string $operator, string | int $value, ?string $logic = null): self
     {
-        # Define um placeholder baseado no nome do campo
-        $placeHolder = '';
-        $placeHolder = $field;
-        # Caso o campo venha com um alias (ex: "u.id"), extrai apenas o nome da coluna (ex: "id")
-        if (str_contains($placeHolder, '.')) {
-            $placeHolder = substr($field, strpos($field, '.') + 1);
+        $placeholder = '';
+        $placeholder = $field;
+
+        if (str_contains($placeholder, '.')) {
+            $placeholder = substr($field, strpos($field, '.') + 1);
         }
-        # Monta a expressão da cláusula WHERE com o placeholder e operador lógico
-        $this->where[] = "{$field} {$operator} :{$placeHolder} {$logic}";
-        # Associa o valor ao placeholder no array de binds
-        $this->binds[$placeHolder] = $value;
-        # Retorna a própria instância para encadeamento
+        if ($logic) {
+    $this->where[] = "{$field} {$operator} :{$placeholder} {$logic}";
+} else {
+    $this->where[] = "{$field} {$operator} :{$placeholder}";
+}
+
+        $this->binds[$placeholder] = $value;
         return $this;
     }
-    public function order(string $field, string $value): ?self
+    public function order(string $field, string $typeOrder = 'asc'): self
     {
-        $this->order = " order by {$field} {$value}";
+        $this->order = " order by {$field}  {$typeOrder}";
         return $this;
     }
-    public function createQuery()
+    public function limit(int $limit, int $offset = 0): self
+    {
+        $this->limit = $limit;
+        $this->offset = $offset;
+        $this->limits = " limit {$this->limit} offset {$this->offset} ";
+        return $this;
+    }
+    public function whereRaw(string $raw, ?string $logic = null): self
+{
+    if ($logic) {
+        $this->where[] = "{$raw} {$logic}";
+    } else {
+        $this->where[] = "{$raw}";
+    }
+    return $this;
+}
+
+    private function createQuery(): string
     {
         if (!$this->fields) {
-            throw new \Exception("Por favor informe os campos a serem selecionados na consulta");
+            throw new \Exception("Para realizar uma consulta SQL é necessário informa os campos da consulta");
         }
         if (!$this->table) {
-            throw new \Exception("Por favor informe o nome da tabela");
+            throw new \Exception("Para realizar a consulta SQL é necessário informa a nome da tabela.");
         }
         $query = '';
         $query = 'select ';
@@ -64,14 +81,7 @@ class SelectQuery
         $query .= $this->limits ?? '';
         return $query;
     }
-    public function limit(int $limit, int $offset): ?self
-    {
-        $this->limit = $limit;
-        $this->offset = $offset;
-        $this->limits = " limit {$this->limit} offset {$this->offset}";
-        return $this;
-    }
-    public function fetch($IsArray = true)
+    public function fetch()
     {
         $query = '';
         $query = $this->createQuery();
@@ -79,12 +89,12 @@ class SelectQuery
             $connection = Connection::connection();
             $prepare = $connection->prepare($query);
             $prepare->execute($this->binds ?? []);
-            return $IsArray ? $prepare->fetch(\PDO::FETCH_ASSOC) : $prepare->fetch(\PDO::FETCH_OBJ);
-        } catch (\PDOException $e) {
-            throw new \Exception("Restrição: {$e->getMessage()}");
+            return $prepare->fetch(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            throw new \Exception("Restrição: " . $e->getMessage());
         }
     }
-    public function fetchAll($IsArray = true)
+    public function fetchAll()
     {
         $query = '';
         $query = $this->createQuery();
@@ -92,9 +102,9 @@ class SelectQuery
             $connection = Connection::connection();
             $prepare = $connection->prepare($query);
             $prepare->execute($this->binds ?? []);
-            return $IsArray ? $prepare->fetchAll(\PDO::FETCH_ASSOC) : $prepare->fetchAll(\PDO::FETCH_OBJ);
-        } catch (\PDOException $e) {
-            throw new \Exception("Restrição: {$e->getMessage()}");
+            return $prepare->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            throw new \Exception("Restrição: " . $e->getMessage());
         }
     }
 }
