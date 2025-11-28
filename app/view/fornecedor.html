@@ -4,27 +4,27 @@
     <div class="row">
         <form class="row g-3 needs-validation" id="form">
             <div class="card-header">
-                    <a href="/cliente/lista" class="btn btn-outline-warning">Voltar</a>
+                    <a href="/fornecedor/lista" class="btn btn-outline-warning">Voltar</a>
             </div>
             <div class="col-md-4">
-                <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite seu nome." required>
+                <label for="nome_fantasia" class="form-label">nome_fantasia</label>
+                <input type="text" class="form-control" id="nome_fantasia" name="nome_fantasia" placeholder="Digite seu nome_fantasia." required>
             </div>
             <div class="col-md-4">
-                <label for="sobrenome" class="form-label">Sobre nome</label>
-                <input type="text" class="form-control" id="sobrenome" name="sobrenome"
-                placeholder="Por favor digite seu sobre nome" required>
+                <label for="sobrenome_razao" class="form-label">Sobre nome</label>
+                <input type="text" class="form-control" id="sobrenome_razao" name="sobrenome_razao"
+                placeholder="Por favor digite seu sobrenome_razao" required>
             </div>
             <div class="col-md-4">
-                <label for="cpf" class="form-label">CPF</label>
-                <input type="text" class="form-control" id="cpf" name="cpf" placeholder="Por favor digite seu CPF"
+                <label for="cpf_cnpj" class="form-label">cpf_cnpj</label>
+                <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" placeholder="Por favor digite seu cpf_cnpj"
                 required>
             </div>
             <div class="col-md-6">
-                <label for="rg" class="form-label">RG</label>
-                <input type="text" class="form-control" id="rg" name="rg" placeholder="Digite seu RG" required>
+                <label for="rg_ie" class="form-label">rg_ie</label>
+                <input type="text" class="form-control" id="rg_ie" name="rg_ie" placeholder="Digite seu rg_ie" required>
                 <div class="invalid-feedback">
-                    seu RG
+                    seu rg_ie
                 </div>
             </div>
             <div class="col-md-6">
@@ -56,5 +56,5 @@
 
 {% block script %}
 {% include "script.html" %}
-<script defer type="module" src="/js/customer.js"></script>
+<script defer type="module" src="/js/fornecedor.js"></script>
 {% endblock %}

@@ -1,5 +1,3 @@
-//import { DataTables } from "./DataTables.js";
-
 const tabela = new $('#tabela').DataTable({
     paging: true,
     lengthChange: true,
@@ -17,9 +15,8 @@ const tabela = new $('#tabela').DataTable({
         searchPlaceholder: 'Digite sua pesquisa...',
     },
     ajax: {
-        url: '/cliente/listuser',
+        url: '/fornecedor/listfornecedor',
         type: 'POST'
     }
 });
 
-//DataTables.SetId('tabela').Post('/user/listuser');

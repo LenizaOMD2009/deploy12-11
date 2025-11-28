@@ -2,34 +2,34 @@
 
 namespace app\controller;
 
-use app\database\builder\InsertQuery;
-
 use app\database\builder\SelectQuery;
 
-class Customer extends Base
+use app\database\builder\InsertQuery;
+
+class Empresas extends Base
 {
 
     public function lista($request, $response)
     {
         $dadosTemplate = [
-            'titulo' => 'Lista de cliente'
+            'titulo' => 'Lista da Empresa'
         ];
         return $this->getTwig()
-            ->render($response, $this->setView('listcustomer'), $dadosTemplate)
+            ->render($response, $this->setView('listempresas'), $dadosTemplate)
             ->withHeader('Content-Type', 'text/html')
             ->withStatus(200);
     }
     public function cadastro($request, $response)
     {
         $dadosTemplate = [
-            'titulo' => 'Cadastro de cliente'
+            'titulo' => 'Cadastro de Empresas'
         ];
         return $this->getTwig()
-            ->render($response, $this->setView('customer'), $dadosTemplate)
+            ->render($response, $this->setView('empresas'), $dadosTemplate)
             ->withHeader('Content-Type', 'text/html')
             ->withStatus(200);
     }
-    public function listcustomer($request, $response)
+    public function listempresas($request, $response)
     {
         try {
             #Captura todas a variaveis de forma mais segura VARIAVEIS POST.
@@ -46,10 +46,10 @@ class Customer extends Base
             
             $fields = [
                 0 => 'id',
-                1 => 'nome',
-                2 => 'sobrenome',
-                3 => 'cpf',
-                4 => 'rg',
+                1 => 'nome_fantasia',
+                2 => 'sobrenome_razao',
+                3 => 'cpf_cnpj',
+                4 => 'rg_ie',
                 5 => 'data_nascimento_abertura'
             ];
             
@@ -58,31 +58,31 @@ class Customer extends Base
             #O termo pesquisado
             $term = $form['search']['value'] ?? '';
             
-            $query = SelectQuery::select('id,nome,sobrenome,cpf,rg,data_nascimento_abertura')->from('cliente');
+            $query = SelectQuery::select('id,nome_fantasia,sobrenome_razao,cpf_cnpj,rg_ie,data_nascimento_abertura')->from('empresas');
             
             if (!is_null($term) && ($term !== '')) {
-                $query->where('cliente.nome', 'ilike', "%{$term}%", 'or')
-                    ->where('cliente.sobrenome', 'ilike', "%{$term}%", 'or')
-                    ->where('cliente.cpf', 'ilike', "%{$term}%", 'or')
-                    ->where('cliente.rg', 'ilike', "%{$term}%", 'or')
-                    ->whereRaw("to_char(cliente.data_nascimento_abertura, 'YYYY-MM-DD') ILIKE '%{$term}%'");
+                $query->where('empresas.nome_fantasia', 'ilike', "%{$term}%", 'or')
+                    ->where('empresas.sobrenome_razao', 'ilike', "%{$term}%", 'or')
+                    ->where('empresas.cpf_cnpj', 'ilike', "%{$term}%", 'or')
+                    ->where('empresas.rg_ie', 'ilike', "%{$term}%", 'or')
+                    ->whereRaw("to_char(empresas.data_nascimento_abertura, 'YYYY-MM-DD') ILIKE '%{$term}%'");
 
 
             }
 
-            $customer = $query
+            $users = $query
                 ->order($orderField, $orderType)
                 ->limit($length, $start)
                 ->fetchAll();
             
             $userData = [];
-            foreach ($customer as $key => $value) {
+            foreach ($users as $key => $value) {
                 $userData[$key] = [
                     $value['id'],
-                    $value['nome'],
-                    $value['sobrenome'],
-                    $value['cpf'],
-                    $value['rg'],
+                    $value['nome_fantasia'],
+                    $value['sobrenome_razao'],
+                    $value['cpf_cnpj'],
+                    $value['rg_ie'],
                     $value['data_nascimento_abertura'],
                     "<button class='btn btn-warning'>Editar</button>
                     <button class='btn btn-danger'>Excluir</button>"
@@ -91,8 +91,8 @@ class Customer extends Base
             
             $data = [
                 'draw' => $form['draw'] ?? 1,
-                'recordsTotal' => count($customer),
-                'recordsFiltered' => count($customer),
+                'recordsTotal' => count($users),
+                'recordsFiltered' => count($users),
                 'data' => $userData
             ];
             
@@ -119,19 +119,19 @@ class Customer extends Base
     public function insert($request, $response)
     {
         try {
-            $nome = $_POST['nome'];
-            $sobrenome = $_POST['sobrenome'];
-            $cpf = $_POST['cpf'];
-            $rg = $_POST['rg'];
+            $nome_fantasia = $_POST['nome_fantasia'];
+            $sobrenome_razao = $_POST['sobrenome_razao'];
+            $cpf_cnpj = $_POST['cpf_cnpj'];
+            $rg_ie = $_POST['rg_ie'];
             $data_nascimento_abertura = $_POST['data_nascimento_abertura'];
             $FieldsAndValues = [
-                'nome' => $nome,
-                'sobrenome' => $sobrenome,
-                'cpf' => $cpf,
-                'rg' => $rg,
+                'nome_fantasia' => $nome_fantasia,
+                'sobrenome_razao' => $sobrenome_razao,
+                'cpf_cnpj' => $cpf_cnpj,
+                'rg_ie' => $rg_ie,
                 'data_nascimento_abertura' => $data_nascimento_abertura
             ];
-            $IsSave = InsertQuery::table('cliente')->save($FieldsAndValues);
+            $IsSave = InsertQuery::table('empresas')->save($FieldsAndValues);
 
             if (!$IsSave) {
                 echo 'Erro ao salvar';
