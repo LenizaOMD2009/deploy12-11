@@ -5,18 +5,21 @@ use app\controller\Home;
 use app\controller\cliente;
 use app\controller\Empresas;
 use app\controller\Fornecedor;
-
+use app\controller\Login;
 use Slim\Routing\RouteCollectorProxy;
 
 $app->get('/', Home::class . ':home');
 
 $app->get('/home', Home::class . ':home');
+$app->get('/login', Login::class . ':login');
 
 $app->group('/usuario', function (RouteCollectorProxy $group) {
     $group->get('/lista', User::class . ':lista');
     $group->get('/cadastro', User::class . ':cadastro');
     $group->post('/listuser', User::class . ':listuser');
     $group->post('/insert', User::class . ':insert');
+    $group->get('/alterar/{id}', User::class . ':alterar');
+    $group->post('/update', User::class . ':update');
 });
 $app->group('/cliente', function (RouteCollectorProxy $group) {
     $group->get('/lista', cliente::class . ':lista');
@@ -36,3 +39,5 @@ $app->group('/fornecedor', function (RouteCollectorProxy $group) {
     $group->post('/listfornecedor', Fornecedor::class . ':listfornecedor');
     $group->post('/insert', Fornecedor::class . ':insert');
 });
+
+
