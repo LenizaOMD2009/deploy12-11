@@ -31,3 +31,36 @@ preCadastro.addEventListener('click', async () => {
         console.log(error);
     }
 });
+
+const form = document.getElementById('form');
+
+if (form) {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const response = await Requests.SetForm('form').Post('/login/autenticar');
+            if (!response.status) {
+                Swal.fire({
+                    title: "Atenção!",
+                    text: response.msg,
+                    icon: "error",
+                    timer: 3000
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: "Sucesso!",
+                text: response.msg,
+                icon: "success",
+                timer: 2000
+            }).then(() => {
+                window.location.href = '/';
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    });
+} else {
+    console.warn('Formulário de login não encontrado: #form');
+}

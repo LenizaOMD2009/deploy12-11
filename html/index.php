@@ -24,13 +24,5 @@ $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
 require __DIR__ . '/../app/helper/settings.php';
 require __DIR__ . '/../app/route/route.php';
-echo "<pre>";
-$id_sessao_old = session_id();
-session_regenerate_id(true);
-$id_sessao_new = session_id();
-echo "<br>";
-echo $id_sessao_old;
-echo "<br>";
-echo $id_sessao_new;
-echo "<br>";
+
 $app->run();

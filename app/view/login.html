@@ -9,231 +9,311 @@
 </head>
 
 <body>
-    
-    <div class="login-container">
-        <div class="modal-header d-flex justify-content-between align-items-start p-0 mb-3" style="border:0;">
-            <h2 class="modal-title fw-semibold text-center w-100 mt-2">Login</h2>
+    <div id="tsparticles" aria-hidden="true"></div>
+    <div class="bow" aria-hidden="true"></div>
+    <div class="bow bow--right" aria-hidden="true"></div>
+    <form id="form">
+        <div class="login-container">
+            <div class="modal-header d-flex justify-content-between align-items-start p-0 mb-3" style="border:0;">
+                <h2 class="modal-title fw-semibold text-center w-100 mt-2">Login</h2>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="login" name="login" placeholder="" autofocus>
+                <label for="login">Informe o seu: E-MAIL, CELULAR ou CPF! </label>
+            </div>
+            <div class="form-floating mb-4">
+                <input type="password" class="form-control" id="senha" name="senha" placeholder="">
+                <label for="senha">Informe sua senha de acesso. </label>
+            </div>
+            <div class="d-flex gap-2 mb-4">
+                <button type="submit" class="btn btn-primary flex-fill">Entrar</button>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary flex-fill" type="button" data-bs-toggle="modal"
+                    data-bs-target="#pre-cadastro">
+                    Pre-Cadastro
+                </button>
+                <button class="btn btn-outline-secondary flex-fill" type="button" data-bs-toggle="modal"
+                    data-bs-target="#recuperarSenha">
+                    Recuperar Senha
+                </button>
+            </div>
         </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="login" name="login" placeholder="">
-            <label for="login">Informe seu Dados</label>
-        </div>
-        <div class="form-floating mb-4">
-            <input type="password" class="form-control" id="senha" name="senha" placeholder="">
-            <label for="senha">Senha</label>
-        </div>
-        <div class="d-flex gap-2 mb-4">
-            <button type="submit" class="btn btn-primary flex-fill">Entrar</button>
-        </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-secondary flex-fill" type="button" data-bs-toggle="modal"
-                data-bs-target="#pre-cadastro">
-                Pre-Cadastro
-            </button>
-            <button class="btn btn-outline-secondary flex-fill" type="button" data-bs-toggle="modal"
-                data-bs-target="#recuperarSenha">
-                Recuperar Senha
-            </button>
-        </div>
-        </form>
-    </div>
-    <div class="modal fade" id="pre-cadastro" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-semibold">Pre-Cadastro</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="">
-                        <label for="nome">Nome</label>
+        <div class="modal fade" id="pre-cadastro" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-semibold">Pre-Cadastro</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="sobrenome" name="sobrenome" placeholder="">
-                        <label for="sobrenome">Sobrenome</label>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="nome" name="nome" placeholder="">
+                                    <label for="nome">Nome</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="sobrenome" name="sobrenome"
+                                        placeholder="">
+                                    <label for="sobrenome">Sobrenome</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="cpf" name="cpf" placeholder="">
+                                    <label for="cpf">CPF</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="celular" name="celular" placeholder="">
+                                    <label for="celular">Telefone</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="whatsapp" name="whatsapp"
+                                        placeholder="">
+                                    <label for="whatsapp">Whatsapp</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="">
+                                    <label for="email">Email</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="rg" name="rg" placeholder="">
+                                    <label for="rg">RG</label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="password" class="form-control" id="senhaCadastro" name="senhaCadastro"
+                                        placeholder="">
+                                    <label for="senhaCadastro">Senha</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="cpf" name="cpf" placeholder="">
-                        <label for="cpf">CPF</label>
+                    <div class="modal-footer">
+                        <button type="button" id="preCadastro" class="btn btn-outline-primary flex-fill">
+                            Enviar
+                        </button>
                     </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="celular" name="celular" placeholder="">
-                        <label for="celular">Telefone</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="whatsapp" name="whatsapp" placeholder="">
-                        <label for="whatsapp">Whatsapp</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="email" name="email" placeholder="">
-                        <label for="email">Email</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="rg" name="rg" placeholder="">
-                        <label for="rg">RG</label>
-                    </div>
-                    <div class="form-floating mb-2">
-                        <input type="password" class="form-control" id="senhaCadastro"  name="senhaCadastro" placeholder="">
-                        <label for="senhaCadastro">Senha</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-primary flex-fill">Enviar</button>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="recuperarSenha" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-semibold">Recuperar Senha</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-floating mb-2">
-                        <input type="password" class="form-control" id="identificador" placeholder="">
-                        <label for="identificador">Identificador</label>
+        <div class="modal fade" id="recuperarSenha" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-semibold">Recuperar Senha</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="form-floating mb-2">
-                        <input type="password" class="form-control" id="senhaRec" placeholder="">
-                        <label for="senhaRec">Nova Senha</label>
+                    <div class="modal-body">
+                        <div class="form-floating mb-2">
+                            <input type="password" class="form-control" id="identificador" placeholder="">
+                            <label for="identificador">Identificador</label>
+                        </div>
+                        <div class="form-floating mb-2">
+                            <input type="password" class="form-control" id="senhaRec" placeholder="">
+                            <label for="senhaRec">Nova Senha</label>
+                        </div>
+                        <div class="form-floating mb-2">
+                            <input type="password" class="form-control" id="senhaRecConfirm" placeholder="">
+                            <label for="senhaRecConfirm">Confirmar Nova Senha</label>
+                        </div>
                     </div>
-                    <div class="form-floating mb-2">
-                        <input type="password" class="form-control" id="senhaRecConfirm" placeholder="">
-                        <label for="senhaRecConfirm">Confirmar Nova Senha</label>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-primary flex-fill">Enviar</button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-primary flex-fill">Enviar</button>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
     <style>
+        /* Hello Kitty themed styles with animated pastel background */
+        :root{
+            --hk-pink-1: #1a1a2e;
+            --hk-pink-2: #0f3460;
+            --hk-pink-3: #16213e;
+            --hk-accent: #0a1128;
+            --hk-white: rgba(255,255,255,0.95);
+        }
+
+        html, body { height: 100%; }
+
         body {
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-
-            background: url('https://www.findup.com.br/wp-content/uploads/2022/08/Prancheta-1-20-7-980x653.jpg') center/cover no-repeat;
-
-            backdrop-filter: blur(4px);
-            font-family: "Inter", "Segoe UI", sans-serif;
             margin: 0;
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial;
+            position: relative;
+            overflow: hidden;
+            background: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=1080&fit=crop') center/cover no-repeat;
+            background-attachment: fixed;
+        }
+        
+        body::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* animated soft clouds/sparkles layer */
+        body::before{
+            content: "";
+            position: absolute;
+            inset: -10% -10% -10% -10%;
+            background-image:
+                radial-gradient(closest-side, rgba(255,255,255,0.12), transparent 60%),
+                radial-gradient(closest-side, rgba(255,255,255,0.08), transparent 60%);
+            background-size: 600px 600px, 900px 900px;
+            animation: drift 24s linear infinite;
+            filter: blur(18px) saturate(1.1);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes drift{
+            from{background-position: 0 0, 0 0}
+            to{background-position: 800px 600px, -600px -900px}
+        }
+
+        /* tsParticles container - full screen behind content but receives mouse outside form */
+        #tsparticles{
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: auto; /* allow particles canvas to get mouse events outside of stacked elements */
+        }
+
+        /* cute floating bows (decorative) */
+        .bow{
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            left: 8%;
+            top: 10%;
+            z-index: 1;
+            transform-origin: center;
+            animation: bob 5s ease-in-out infinite;
+            pointer-events: none;
+            filter: drop-shadow(0 6px 10px rgba(0,0,0,0.08));
+            background: linear-gradient(90deg,#0f3460,#16213e);
+            border-radius: 12px;
+        }
+
+        .bow--right{ left: auto; right: 6%; top: 6%; transform: scale(0.85); }
+
+        @keyframes bob{
+            0%{ transform: translateY(0) rotate(-6deg) }
+            50%{ transform: translateY(10px) rotate(6deg) }
+            100%{ transform: translateY(0) rotate(-6deg) }
         }
 
         .login-container {
             width: 420px;
-            padding: 40px 35px;
-            background: rgba(255, 255, 255, 0.90);
-            border-radius: 18px;
-
-            box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(8px);
-
+            padding: 36px 32px;
+            background: var(--hk-white);
+            border-radius: 20px;
+            position: relative;
+            z-index: 2;
+            border: 2px solid rgba(15,52,96,0.12);
+            box-shadow: 0 18px 40px rgba(15,52,96,0.08);
             animation: fadeIn 0.5s ease;
         }
 
-        h3 {
-            color: #2f3b4a;
-            letter-spacing: 1px;
+        h2.modal-title{ color: #0a1128; margin:0 0 6px 0; font-weight:700 }
+
+        .form-control{
+            background: #fff;
+            border: 1px solid rgba(15,52,96,0.18);
+            transition: 0.18s;
+            border-radius: 10px;
+            padding: 1rem .75rem;
         }
 
-        .form-control {
-            background: #f4f6f8;
-            border: 1px solid #d0d7df;
-            transition: 0.2s;
-            border-radius: 8px;
+        .form-control:focus{ box-shadow: 0 6px 18px rgba(15,52,96,0.12); border-color: #0a1128; outline: none }
+
+        .btn-primary{
+            background: linear-gradient(90deg,#0a1128,#16213e) !important;
+            border: 0 !important;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: .6rem 1rem;
+            color: #fff !important;
         }
 
-        .form-control:focus {
-            border-color: #6c7a91;
-            box-shadow: 0 0 0 2px rgba(108, 122, 145, 0.25);
-            background: #ffffff;
-        }
+        .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,17,40,0.3) }
 
-        .btn-primary {
-            background: #2f3b4a !important;
-            border-color: #2f3b4a !important;
+        .btn-outline-secondary{
+            border-radius: 12px;
             font-weight: 600;
-            border-radius: 8px;
+            color: #0f3460;
+            border: 1px solid rgba(15,52,96,0.3);
+            background: transparent;
         }
 
-        .btn-primary:hover {
-            background: #1f2833 !important;
-            border-color: #1f2833 !important;
+        .btn-outline-secondary:hover{ background: rgba(255,255,255,0.8); color: #0a1128 }
+
+        .btn-outline-primary{ border-radius: 12px; border-color: #0a1128; color: #0a1128; font-weight:600 }
+
+        .modal-content{ border-radius: 14px; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.12) }
+
+        .modal-header{ border-bottom: none; padding-bottom: 0 }
+
+        .modal-title{ font-weight: 700; color: #0a1128 }
+
+        @keyframes fadeIn{
+            from{ opacity:0; transform: translateY(10px) }
+            to{ opacity:1; transform: translateY(0) }
         }
 
-        .btn-outline-secondary {
-            border-radius: 8px;
-            font-weight: 500;
-            color: #4a5868;
-            border-color: #b7c2cd;
-        }
-
-        .btn-outline-secondary:hover {
-            background: #e7ecf1;
-            color: #2f3b4a;
-            border-color: #a8b4c0;
-        }
-
-        .btn-outline-primary {
-            border-radius: 8px;
-            border-color: #2f3b4a;
-            color: #2f3b4a;
-            font-weight: 500;
-        }
-
-        .btn-outline-primary:hover {
-            background: #2f3b4a;
-            color: white;
-        }
-
-        .modal-content {
-            border-radius: 14px;
-            padding: 5px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .modal-header {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .modal-title {
-            font-weight: 600;
-            color: #2f3b4a;
-        }
-
-        .btn-success {
-            background: #2b7a48 !important;
-            border-color: #2b7a48 !important;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        .btn-success:hover {
-            background: #1f5a36 !important;
-            border-color: #1f5a36 !important;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        /* small responsive tweak */
+        @media (max-width:480px){ .login-container{ width: 92%; padding: 22px } .bow{ display:none } }
     </style>
     {% include "script.html" %}
     <script defer type="module" aria-modal="true" src="/js/login.js"></script>
+    <!-- tsParticles (CDN) - lightweight pastel particles background -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+    <script>
+        if (window.tsParticles) {
+            tsParticles.load('tsparticles', {
+                fpsLimit: 60,
+                fullScreen: { enable: false },
+                detectRetina: true,
+                particles: {
+                    number: { value: 100, density: { enable: true, area: 500 } },
+                    color: { value: ['#ffffff', '#fff5f8', '#ffe6f2'] },
+                    shape: { type: 'circle' },
+                    opacity: {
+                        value: 0.7,
+                        random: { enable: true, minimumValue: 0.35 },
+                        anim: { enable: true, speed: 0.6, minimumValue: 0.35, sync: false }
+                    },
+                    size: { value: { min: 1, max: 4 } },
+                    move: {
+                        enable: true,
+                        speed: 4,
+                        direction: 'none',
+                        random: true,
+                        straight: false,
+                        outModes: { default: 'out' }
+                    }
+                },
+                interactivity: {
+                    detectsOn: 'canvas',
+                    events: {
+                        onHover: { enable: true, mode: ['attract'] },
+                        onClick: { enable: false }
+                    },
+                    modes: {
+                        attract: { distance: 300, factor: 3.5, speed: 3 }
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

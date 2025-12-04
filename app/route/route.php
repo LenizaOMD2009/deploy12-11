@@ -13,8 +13,9 @@ $app->get('/', Home::class . ':home');
 $app->get('/home', Home::class . ':home');
 $app->get('/login', Login::class . ':login');
 
-$app->group('/usuario', function (RouteCollectorProxy $group) {
-     $group->get('/precadastro', Login::class . ':precadastro');
+$app->group('/login', function (RouteCollectorProxy $group) {
+    $group->post('/precadastro', Login::class . ':precadastro');
+    $group->post('/autenticar', Login::class . ':autenticar');
 });
 
 $app->group('/usuario', function (RouteCollectorProxy $group) {
