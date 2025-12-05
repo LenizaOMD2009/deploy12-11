@@ -64,17 +64,19 @@ class User extends Base
             0 => 'id',
             1 => 'nome',
             2 => 'sobrenome',
-            3 => 'cpf'
+            3 => 'cpf',
+            4 => 'rg'
         ];
         #Capturamos o nome do capo a ser ordenado.
         $orderField = $fields[$order];
         #O termo pesquisado
         $term = $form['search']['value'];
-        $query = SelectQuery::select('id,nome,sobrenome,cpf')->from('usuario');
+        $query = SelectQuery::select('id,nome,sobrenome,cpf,rg')->from('usuario');
         if (!is_null($term) && ($term !== '')) {
             $query->where('usuario.nome', 'ilike', "%{$term}%", 'or')
                 ->where('usuario.sobrenome', 'ilike', "%{$term}%", 'or')
-                ->where('usuario.cpf', 'ilike', "%{$term}%");
+                ->where('usuario.cpf', 'ilike', "%{$term}%", 'or')
+                ->where('usuario.rg', 'ilike', "%{$term}%");
         }
 
         $users = $query
@@ -89,6 +91,7 @@ class User extends Base
                 $value['nome'],
                 $value['sobrenome'],
                 $value['cpf'],
+                $value['rg'],
                 "<a href='/usuario/alterar/{$value['id']}' class='btn btn-warning'>Editar</a>
                 <button onclick='Delete({$value['id']})' class='btn btn-danger'>Excluir</button>"
             ];
@@ -107,7 +110,6 @@ class User extends Base
         return $response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus(200);
-            
     }
     public function insert($request, $response)
     {
@@ -118,7 +120,6 @@ class User extends Base
                 'sobrenome' => $form['sobrenome'],
                 'cpf' => $form['cpf'],
                 'rg' => $form['rg'],
-                'data_nascimento' => $form['data_nascimento'],
                 'senha' => password_hash($form['senha'], PASSWORD_DEFAULT),
                 #'ativo' => (isset($form['ativo']) and $form['ativo'] === 'true') ? true : false,
                 #'administrador' => (isset($form['administrador']) and $form['administrador'] === 'true') ? true : false
@@ -162,7 +163,6 @@ class User extends Base
                 'sobrenome' => $form['sobrenome'],
                 'cpf' => $form['cpf'],
                 'rg' => $form['rg'],
-                'data_nascimento' => $form['data_nascimento'],
                 'senha' => password_hash($form['senha'], PASSWORD_DEFAULT),
                 #'ativo' => (isset($form['ativo']) and $form['ativo'] === 'true') ? true : false,
                 #'administrador' => (isset($form['administrador']) and $form['administrador'] === 'true') ? true : false

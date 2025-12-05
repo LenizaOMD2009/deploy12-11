@@ -57,7 +57,6 @@ class Login extends Base
                 'id_usuario' => $id_usuario,
                 'tipo' => 'email',
                 'contato' => $form['email']
-
             ];
             InsertQuery::table('contato')->save($dadosContato);
             $dadosContato = [];
@@ -88,11 +87,9 @@ class Login extends Base
     {
         try {
             $form = $request->getParsedBody();
-
             if (!isset($form['login']) || empty($form['login'])) {
                 return $this->SendJson($response, ['status' => false, 'msg' => 'O campo login é obrigatório!', 'id' => 0], 403);
             }
-
             if (!isset($form['senha']) || empty($form['senha'])) {
                 return $this->SendJson($response, ['status' => false, 'msg' => 'O campo senha é obrigatório!', 'id' => 0], 403);
             }
@@ -103,11 +100,10 @@ class Login extends Base
                 ->where('celular', '=', $form['login'], 'or')
                 ->where('whatsapp', '=', $form['login'])
                 ->fetch();
-
-            if (!isset($user) || empty($user) || count($user) <= 0) {
+            if (!isset($user) || empty($user) || count($user) <= 0) {                
                 return $this->SendJson(
                     $response,
-                    ['status' => false, 'msg' => 'Usuário ou senha inválidos!', 'id' => $user['id']],
+                    ['status' => false, 'msg' => 'Usuário ou senha inválidos!', 'id' => 0],
                     403
                 );
             }
@@ -125,11 +121,9 @@ class Login extends Base
                     403
                 );
             }
-
             if (password_needs_rehash($user['senha'], PASSWORD_DEFAULT)) {
                 UpdateQuery::table('usuario')->set(['senha' => password_hash($form['senha'], PASSWORD_DEFAULT)])->where('id', '=', $user['id'])->update();
             }
-
             #Criar a sessão do usuário.
             $_SESSION['usuario'] = [
                 'id' => $user['id'],
@@ -137,9 +131,10 @@ class Login extends Base
                 'sobrenome' => $user['sobrenome'],
                 'cpf' => $user['cpf'],
                 'rg' => $user['rg'],
-                'ativo' => $user['ativo']
+                'senha' => $user['senha'],
+                'ativo' => $user['ativo'],
+                'logado' => true
             ];
-
             return $this->SendJson(
                 $response,
                 ['status' => true, 'msg' => 'Autenticação realizada com sucesso!', 'id' => $user['id']],
