@@ -1,3 +1,5 @@
+
+import { Requests } from "./Requests.js";
 const tabela = new $('#tabela').DataTable({
     paging: true,
     lengthChange: true,
@@ -19,4 +21,32 @@ const tabela = new $('#tabela').DataTable({
         type: 'POST'
     }
 });
-
+async function Delete(id) {
+    document.getElementById('id').value = id;
+    const response = await Requests.SetForm('form').Post('/fornecedor/delete');
+    if (!response.status) {
+        Swal.fire({
+            title: "Erro ao remover!",
+            icon: "error",
+            html: response.msg,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        return;
+    }
+    Swal.fire({
+        title: "Removido com sucesso!",
+        icon: "success",
+        html: response.msg,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    tabela.ajax.reload();
+}
+window.Delete = Delete;

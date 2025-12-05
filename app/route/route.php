@@ -41,6 +41,7 @@ $app->group('/empresas', function (RouteCollectorProxy $group) {
 $app->group('/fornecedor', function (RouteCollectorProxy $group) {
     $group->get('/lista', Fornecedor::class . ':lista');
     $group->get('/cadastro', Fornecedor::class . ':cadastro');
+    $group->get('/delete', Fornecedor::class . ':delete');
     $group->post('/listfornecedor', Fornecedor::class . ':listfornecedor');
     $group->post('/insert', Fornecedor::class . ':insert');
 });

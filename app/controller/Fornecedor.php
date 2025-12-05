@@ -3,8 +3,8 @@
 namespace app\controller;
 
 use app\database\builder\SelectQuery;
-
 use app\database\builder\InsertQuery;
+use app\database\builder\DeleteQuery;
 
 class fornecedor extends Base
 {
@@ -69,11 +69,10 @@ class fornecedor extends Base
 
 
             }
-
             $users = $query
-                ->order($orderField, $orderType)
-                ->limit($length, $start)
-                ->fetchAll();
+            ->order($orderField, $orderType)
+            ->limit($length, $start)
+            ->fetchAll();
             
             $userData = [];
             foreach ($users as $key => $value) {
@@ -85,7 +84,7 @@ class fornecedor extends Base
                     $value['rg_ie'],
                     $value['data_nascimento_abertura'],
                     "<button class='btn btn-warning'>Editar</button>
-                    <button class='btn btn-danger'>Excluir</button>"
+                    <button type='button' onclick='Delete(" . $value['id'] . ");' class='btn btn-danger'>Excluir</button>"
                 ];
             }
             
@@ -138,6 +137,25 @@ class fornecedor extends Base
                 die;
             }
             echo "Salvo com sucesso!";
+            die;
+        } catch (\Throwable $th) {
+            echo "Erro: " . $th->getMessage();
+            die;
+        }
+    }
+     public function delete($request, $response)
+    {
+        try {
+            $id = $_POST['id'];
+            $IsDelete = DeleteQuery::table('fornecedor')
+                ->where('id', '=', $id)
+                ->delete();
+
+            if (!$IsDelete) {
+                echo json_encode(['status' => false, 'msg' => $IsDelete, 'id' => $id]);
+                die;
+            }
+            echo json_encode(['status' => true, 'msg' => 'Removido com sucesso!', 'id' => $id]);
             die;
         } catch (\Throwable $th) {
             echo "Erro: " . $th->getMessage();

@@ -1,22 +1,28 @@
-
-import { Requests } from "./Requests.js";
 import { Validate } from "./Validate.js";
+import { Requests } from "./Requests.js";
+const Salvar = document.getElementById('insert');
 
-const InsertButton = document.getElementById('insert');
-
-$('#cpf_cnpj').inputmask({ "mask": ["999.999.999-99", "99.999.999/9999-99"] });
-
-InsertButton.addEventListener('click', async () => {
-    /*const IsValid = Validate
-        .SetForm('form')
-        .Validate();
-    console.log(IsValid);*/
-    const response = await Requests.SetForm('form').Post('/fornecedor/insert');
-});
-/*
-const Salvar = document.getElementById('salvar');
+$('#cpf').inputmask({ "mask": ["999.999.999-99", "99.999.999/9999-99"] });
+$('#tel').inputmask({ "mask": ["(99) 99999-9999"] });
 
 Salvar.addEventListener('click', async () => {
     Validate.SetForm('form').Validate();
+
+    const response = await Requests.SetForm('form').Post('/fornecedor/insert');
     console.log(response);
-});*/
+    if (!response.status) {
+        Swal.fire({
+            icon: "error",
+            title: "Eita patrão!",
+            text: response.msg,
+        });
+        return
+    }
+
+    Swal.fire({
+        title: "Cadastro realizado com sucesso!",
+        icon: "success",
+        draggable: true
+    });
+
+});

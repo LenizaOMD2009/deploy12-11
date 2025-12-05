@@ -64,4 +64,67 @@ class Middleware
         # Retorna o middleware para ser registrado no Slim Framework
         return $middleware;
     }
+
+    /**
+     * Verifica se o usuário atual está autenticado e ativo.
+     * Retorna true se a sessão contém usuário logado e o registro no banco estiver ativo.
+     * Uso: Middleware::check()
+     *
+     * @return bool
+     */
+    public static function check(): bool
+    {
+        if (empty($_SESSION['usuario']) || empty($_SESSION['usuario']['id']) || empty($_SESSION['usuario']['logado'])) {
+            return false;
+        }
+
+        $usuario = SelectQuery::select()
+            ->from('usuario')
+            ->where('id', '=', $_SESSION['usuario']['id'])
+            ->fetch();
+
+        if (empty($usuario) || empty($usuario['ativo'])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Retorna um middleware (closure) que exige autenticação.
+     * - Para requisições GET não autenticadas: redireciona para login (302).
+     * - Para requisições não-GET (AJAX/POST/etc) não autenticadas: retorna JSON 401.
+     * Uso: $app->add(Middleware::middleware());
+     *
+     * @return callable
+     */
+    public static function middleware(): callable
+    {
+        return function ($request, $handler) {
+            // Se usuário autenticado e ativo, segue a requisição
+            if (self::check()) {
+                return $handler->handle($request);
+            }
+
+            // Não autenticado
+            $method = $request->getMethod();
+
+            // Limpa sessão residual
+            session_destroy();
+
+            if ($method === 'GET') {
+                $response = $handler->handle($request);
+                return $response->withHeader('Location', HOME . '/login')->withStatus(302);
+            }
+
+            // Para requisições AJAX/POST/etc, retornar JSON de erro 401
+            $response = new \Slim\Psr7\Response();
+            $payload = json_encode([
+                'status' => false,
+                'message' => 'Unauthorized - authentication required'
+            ], JSON_UNESCAPED_UNICODE);
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+        };
+    }
 }
