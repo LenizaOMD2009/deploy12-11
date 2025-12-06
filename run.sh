@@ -16,8 +16,29 @@ PG_DB="leniza"
 #### Configurações do banco de dados -- CRIANDO USUÁRIO CASO NÃO EXISTA 
 ###############################################
  ##Tabela usuario
-	create_user_if_not_exists() {
-       id bigserial PRIMARY KEY,
+create_database_if_not_exists() {
+    echo ">> Verificando se o banco '${PG_DB}' existe..."
+
+    DB_EXISTS=$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='${PG_DB}'")
+
+    if [ "$DB_EXISTS" = "1" ]; then
+        echo "   - Banco já existe. Garantindo que o owner é '${PG_USER}'..."
+        sudo -u postgres psql -c "ALTER DATABASE ${PG_DB} OWNER TO ${PG_USER};"
+    else
+        echo "   - Banco não existe. Criando banco..."
+        sudo -u postgres psql -c "CREATE DATABASE ${PG_DB} OWNER ${PG_USER};"
+        echo "   - Banco criado com sucesso."
+    fi
+}
+############################################################
+# 3) Criar tabelas e view se não existirem
+############################################################
+create_schema_objects() {
+    echo ">> Conectando ao banco '${PG_DB}' e criando objetos..."
+sudo -u postgres psql -d "${PG_DB}" <<EOF
+    -- Tabela usuario
+    CREATE TABLE IF NOT EXISTS usuario (
+        id bigserial PRIMARY KEY,
         nome text,
         sobrenome text,
         cpf text,
@@ -29,9 +50,9 @@ PG_DB="leniza"
         codigo_verificacao text,
         data_cadastro timestamp DEFAULT CURRENT_TIMESTAMP,
         data_alteracao timestamp DEFAULT CURRENT_TIMESTAMP
-	};
-    ##Tabela contato
-    create_contato_if_not_exists() {
+    );
+    -- Tabela contato
+    CREATE TABLE IF NOT EXISTS contato (
         id bigserial PRIMARY KEY,
         id_usuario bigint,
         tipo text,
@@ -42,8 +63,8 @@ PG_DB="leniza"
             REFERENCES public.usuario (id)
             ON UPDATE NO ACTION
             ON DELETE NO ACTION
-    };
-    ##View vw_usuario_contatos
+    );
+    -- View vw_usuario_contatos
     CREATE OR REPLACE VIEW vw_usuario_contatos AS
     SELECT u.id,
         u.nome,
@@ -62,5 +83,18 @@ PG_DB="leniza"
     FROM usuario u
     LEFT JOIN contato c ON c.id_usuario = u.id
     GROUP BY u.id, u.nome, u.sobrenome, u.cpf, u.rg, u.data_cadastro, u.data_alteracao;
+EOF
+    echo "   - Tabelas e view verificadas/criadas com sucesso."
+}
 
+############################################################
+# Execução das funções
+############################################################
 
+create_user_if_not_exists
+create_database_if_not_exists
+create_schema_objects 
+
+echo ">> Processo concluído!"
+
+service nginx reload
