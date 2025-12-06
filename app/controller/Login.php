@@ -11,6 +11,7 @@ class Login extends Base
     public function login($request, $response)
     {
         try {
+
             $dadosTemplate = [
                 'titulo' => 'Autenticação'
             ];
@@ -100,7 +101,7 @@ class Login extends Base
                 ->where('celular', '=', $form['login'], 'or')
                 ->where('whatsapp', '=', $form['login'])
                 ->fetch();
-            if (!isset($user) || empty($user) || count($user) <= 0) {                
+            if (!isset($user) || empty($user) || count($user) <= 0) {
                 return $this->SendJson(
                     $response,
                     ['status' => false, 'msg' => 'Usuário ou senha inválidos!', 'id' => 0],

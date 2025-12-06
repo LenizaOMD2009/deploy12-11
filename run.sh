@@ -1,84 +1,66 @@
-#!/usr/bin/env bash
-set -euo pipefail
+cd /home/deploy12-11
 
-# run.sh - script de deploy/instalação idempotente
-# - instala dependências via composer
-# - aplica arquivos SQL em database/migrations (ordenados)
-# - recarrega nginx
+rm -R vendor/
+rm -R composer.lock
 
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$PROJECT_ROOT"
+export COMPOSER_ALLOW_SUPERUSER=1
+echo "Instalando dependencias do composer..."
+composer install --no-interaction --prefer-dist --optimize-autoloader
+composer update --no-interaction
+composer dump-autoload -o
 
-echo "[run.sh] Projeto: $PROJECT_ROOT"
+PG_USER="senac"
+PG_PASS="senac"
+PG_DB="leniza"
+###############################################################
+#### Configurações do banco de dados -- CRIANDO USUÁRIO CASO NÃO EXISTA 
+###############################################
+ ##Tabela usuario
+	create_user_if_not_exists() {
+       id bigserial PRIMARY KEY,
+        nome text,
+        sobrenome text,
+        cpf text,
+        rg text,
+        data_nascimento date,
+        senha text,
+        ativo boolean DEFAULT false,
+        administrador boolean DEFAULT false,
+        codigo_verificacao text,
+        data_cadastro timestamp DEFAULT CURRENT_TIMESTAMP,
+        data_alteracao timestamp DEFAULT CURRENT_TIMESTAMP
+	};
+    ##Tabela contato
+    create_contato_if_not_exists() {
+        id bigserial PRIMARY KEY,
+        id_usuario bigint,
+        tipo text,
+        contato text,
+        data_cadastro timestamp,
+        data_alteracao timestamp,
+        CONSTRAINT contato_id_usuario_fkey FOREIGN KEY (id_usuario)
+            REFERENCES public.usuario (id)
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+    };
+    ##View vw_usuario_contatos
+    CREATE OR REPLACE VIEW vw_usuario_contatos AS
+    SELECT u.id,
+        u.nome,
+        u.sobrenome,
+        u.cpf,
+        u.rg,
+        u.senha,
+        u.ativo,
+        u.administrador,
+        u.codigo_verificacao,
+        MAX(CASE WHEN c.tipo = 'email' THEN c.contato ELSE NULL END) AS email,
+        MAX(CASE WHEN c.tipo = 'celular' THEN c.contato ELSE NULL END) AS celular,
+        MAX(CASE WHEN c.tipo = 'whatsapp' THEN c.contato ELSE NULL END) AS whatsapp,
+        u.data_cadastro,
+        u.data_alteracao
+    FROM usuario u
+    LEFT JOIN contato c ON c.id_usuario = u.id
+    GROUP BY u.id, u.nome, u.sobrenome, u.cpf, u.rg, u.data_cadastro, u.data_alteracao;
 
-# --- Composer install (sem dev) ---
-if ! command -v composer > /dev/null 2>&1; then
-	echo "[run.sh] composer não encontrado no PATH. Abortando."
-	exit 1
-fi
 
-echo "[run.sh] Removendo vendor/ antigo (se existir) e reinstalando..."
-if [ -d "vendor" ]; then
-	rm -rf vendor/
-fi
-
-composer install --no-dev --no-progress -a
-
-# --- Variáveis de banco de dados (substitua/defina via env se necessário) ---
-DB_HOST="${DB_HOST:-localhost}"
-DB_PORT="${DB_PORT:-5432}"
-DB_NAME="${DB_NAME:-app_db}"
-DB_USER="${DB_USER:-postgres}"
-DB_PASS="${DB_PASS:-}"
-
-echo "[run.sh] DB -> host=$DB_HOST port=$DB_PORT db=$DB_NAME user=$DB_USER"
-
-run_sql_file(){
-	local file="$1"
-	echo "[run.sh] Aplicando: $file"
-
-	if [ "$DB_USER" = "postgres" ] && [ -z "$DB_PASS" ]; then
-		# Usa sudo -u postgres (socket local)
-		sudo -u postgres psql -d "$DB_NAME" -f "$file"
-	else
-		if [ -n "$DB_PASS" ]; then
-			PGPASSWORD="$DB_PASS" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -f "$file"
-		else
-			psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -f "$file"
-		fi
-	fi
-}
-
-# --- Executa migrações SQL ---
-MIGRATIONS_DIR="$PROJECT_ROOT/database/migrations"
-if [ -d "$MIGRATIONS_DIR" ]; then
-	shopt -s nullglob
-	sql_files=("$MIGRATIONS_DIR"/*.sql)
-	if [ ${#sql_files[@]} -eq 0 ]; then
-		echo "[run.sh] Nenhum arquivo .sql encontrado em $MIGRATIONS_DIR"
-	else
-		# Ordena por nome (ex: 001_... , 002_...)
-		IFS=$'\n' sorted=($(sort <<<"${sql_files[*]}"))
-		unset IFS
-		for f in "${sorted[@]}"; do
-			run_sql_file "$f"
-		done
-	fi
-else
-	echo "[run.sh] Diretorio de migrações não encontrado: $MIGRATIONS_DIR (pulando migrações)"
-fi
-
-# --- Ajusta permissões e recarrega Nginx ---
-echo "[run.sh] Ajustando permissões em vendor/ (se existir)"
-if [ -d "vendor" ]; then
-	chmod -R 755 vendor/
-fi
-
-echo "[run.sh] Recarregando nginx"
-if command -v systemctl > /dev/null 2>&1; then
-	sudo systemctl reload nginx || sudo systemctl restart nginx
-else
-	sudo service nginx reload || sudo service nginx restart
-fi
-
-echo "[run.sh] Deploy finalizado."
